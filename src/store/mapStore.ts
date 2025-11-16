@@ -45,11 +45,11 @@ export const useMapStore = create<MapStore>((set) => ({
 
   flyToHome: () => {
     const viewState = {
-      longitude: -0.1276, // London coordinates
-      latitude: 51.5074,
+      longitude: 174.7633, // Auckland coordinates
+      latitude: -36.8485,
       zoom: 10,
     };
-    console.log("[MapStore] Flying home to London:", viewState);
+    console.log("[MapStore] Flying home to Auckland:", viewState);
     set({ viewState });
   },
 

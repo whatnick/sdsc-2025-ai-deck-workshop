@@ -1,4 +1,5 @@
 import { anthropic } from "@ai-sdk/anthropic";
+import { bedrock } from "@ai-sdk/amazon-bedrock";
 import { convertToModelMessages, jsonSchema, streamText, UIMessage } from "ai";
 import { loadConfigFile } from "@/lib/config";
 import { logToFile } from "@/lib/logger";
@@ -36,7 +37,11 @@ export async function POST(req: Request) {
 
     const result = streamText({
       // model: anthropic('claude-3-7-sonnet-latest'), // Smart
-      model: anthropic("claude-3-5-haiku-latest"), // Fast
+      // model: anthropic("claude-3-5-haiku-latest"), // Fast
+      // TODO: Convert provider to use BedrockAnthropic when available
+      model: bedrock('us.anthropic.claude-haiku-4-5-20251001-v1:0'), // Bedrock Claude 3.5
+      // model: bedrock('us.anthropic.claude-3-7-sonnet-20250219-v1:0'), // Bedrock Claude 3.7
+      maxDuration,
       onToolCall: ({ toolCall }) => {
         logToFile("[API] Tool call received", { toolCall });
         console.log(
