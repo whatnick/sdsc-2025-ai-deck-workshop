@@ -25,6 +25,15 @@ export default function Home() {
         })
         .catch(console.error);
     }
+
+    // Fetch and store rivers/lakes data in mapStore
+    fetch('/ne_110m_rivers_lake_centerlines.geojson')
+      .then(res => res.json())
+      .then((data: GeoJsonData) => {
+        console.log('[HomePage] Loaded rivers/lakes data with', data?.features?.length || 0, 'features');
+        useMapStore.getState().setRiversLakesData(data);
+      })
+      .catch(console.error);
   }, [config]);
 
   useEffect(() => {

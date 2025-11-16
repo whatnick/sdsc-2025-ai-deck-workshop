@@ -28,6 +28,8 @@
   "exampleQuestions": [
     "Zoom to a location on map, e.g. 'take me to New York'",
     "Look up information from dataset, e.g. 'tell me about JFK airport'",
+    "Ask about rivers and lakes, e.g. 'tell me about the Amazon river'",
+    "Create buffer zones, e.g. 'create a 10km buffer around LAX airport'",
     "Add a CARTO map, e.g. 'show me a cell tower density map'",
     "Apply visual effects, e.g. 'apply sepia effect to the map'"
   ]

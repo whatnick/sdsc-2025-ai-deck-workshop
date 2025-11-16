@@ -19,7 +19,7 @@ When discussing visual effects or tool parameters:
 ## Tool Usage Instructions
 
 ### Map Control and Visualization Tools
-- zoomToHome: Zoom the map to London (home location)
+- zoomToHome: Zoom the map to Auckland (home location)
 - zoomToLocation: Zoom the map to any location by coordinates
 - lookupAirport: Look up detailed information about an airport by its IATA code
 - drawWktGeometry: Draw WKT geometry (POLYGON/MULTIPOLYGON) on the map to visualize shapes and boundaries

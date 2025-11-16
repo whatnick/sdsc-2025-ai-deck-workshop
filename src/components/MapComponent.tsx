@@ -28,6 +28,7 @@ export default function MapComponent() {
   const cartoMapId = useMapStore((state) => state.cartoMapId);
   const effects = useMapStore((state) => state.postProcessEffects);
   const airportData = useMapStore((state) => state.airportData);
+  const riversLakesData = useMapStore((state) => state.riversLakesData);
 
   // Suppress CARTO-related console errors
   useEffect(() => {
@@ -96,11 +97,11 @@ export default function MapComponent() {
       result.push(...cartoLayers);
     }
 
-    // Add data layer if airportData is available
+    // Add airport data layer if airportData is available
     if (airportData) {
       result.push(
         new GeoJsonLayer({
-          id: 'data-layer',
+          id: 'airports-layer',
           data: airportData,
           pickable: true,
           stroked: false,
@@ -110,6 +111,23 @@ export default function MapComponent() {
           pointRadiusMinPixels: config.displaySettings.layer.pointRadiusMinPixels,
           getFillColor: config.displaySettings.layer.fillColor,
           getPointRadius: config.displaySettings.layer.pointRadius,
+        })
+      );
+    }
+
+    // Add rivers/lakes data layer if riversLakesData is available
+    if (riversLakesData) {
+      result.push(
+        new GeoJsonLayer({
+          id: 'rivers-lakes-layer',
+          data: riversLakesData,
+          pickable: true,
+          stroked: true,
+          filled: false,
+          lineWidthScale: 1,
+          lineWidthMinPixels: 2,
+          getLineColor: [30, 144, 255, 200], // Blue color for water features
+          getLineWidth: 3,
         })
       );
     }
@@ -135,7 +153,7 @@ export default function MapComponent() {
     }
 
     return result;
-  }, [cartoLayers, config, wktGeometry, airportData]);
+  }, [cartoLayers, config, wktGeometry, airportData, riversLakesData]);
 
   const getTooltip = useCallback((info: any) => {
     if (!info.object) return null;
@@ -152,16 +170,25 @@ export default function MapComponent() {
       return cartoProps || 'No data';
     }
 
-    // For GeoJSON, use configured fields
-    const tooltipContent = config.displaySettings.tooltip.fields.map((field, index) => {
-      const value = properties[field.key];
-      if (index === 0) {
-        return value || `Unknown ${field.label}`;
-      }
-      return `${field.label}: ${value || 'N/A'}`;
-    }).join('\n');
+    // For airports, use configured fields
+    if (info.object.properties?.['iata_code']) {
+      const tooltipContent = config.displaySettings.tooltip.fields.map((field, index) => {
+        const value = properties[field.key];
+        if (index === 0) {
+          return value || `Unknown ${field.label}`;
+        }
+        return `${field.label}: ${value || 'N/A'}`;
+      }).join('\n');
+      return tooltipContent;
+    }
 
-    return tooltipContent;
+    // For rivers/lakes, show name and feature class
+    if (properties.name && properties.featureclass) {
+      return `${properties.name}\nType: ${properties.featureclass}\nScale Rank: ${properties.scalerank || 'N/A'}`;
+    }
+
+    // Default for other GeoJSON features
+    return properties.name || 'Unknown Feature';
   }, [config.displaySettings.tooltip.fields]);
 
   return (
